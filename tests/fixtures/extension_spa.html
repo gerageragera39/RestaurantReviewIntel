@@ -1,0 +1,15 @@
+<!doctype html><html><head><meta charset="utf-8"></head><body>
+<main role="main" id="reviews-main"><h1 class="DUwDvf">Fixture Restaurant</h1><button role="tab" aria-selected="true">Reviews</button>
+<section role="region" aria-label="Reviews" id="review-region"><button aria-label="Sort reviews">Sort reviews</button>
+<div id="initial-scroll" style="overflow-y:auto;height:240px"><div class="jftiEf" data-review-id="spa-first"><span class="kvMYJc" aria-label="5 stars"></span><span class="rsqaWe">yesterday</span><span class="wiI7pd">First SPA review.</span></div><div style="height:1000px"></div></div></section></main>
+<template id="replacement"><section role="region" aria-label="Reviews" id="replacement-region"><button aria-label="Sort reviews">Sort reviews</button>
+<div class="different-layout" id="replacement-scroll" style="overflow-y:scroll;height:220px"><div role="article" data-review-id="spa-next"><span class="kvMYJc" aria-label="4 stars"></span><span class="rsqaWe">a week ago</span><span class="wiI7pd">Next SPA review.</span></div><div style="height:1000px"></div></div></section></template>
+<script>
+window.replacePanel = (delay = 0) => {
+ document.querySelector('#review-region')?.remove();
+ document.querySelector('h1').textContent='Reviews';
+ history.pushState({},'',location.pathname+'?entry=reviews&sort=newest');
+ const append = () => document.querySelector('main').append(document.querySelector('#replacement').content.cloneNode(true));
+ if (delay) setTimeout(append,delay); else append();
+};
+</script></body></html>

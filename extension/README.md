@@ -4,9 +4,10 @@ This Manifest V3 extension reads the rendered review DOM in normal Chrome. It
 uses no Places API, backend review endpoint, external service, login automation,
 cookies API, or Playwright at runtime. The existing Python application is preserved.
 
-**Live Google Maps verification is pending.** The unpacked extension passed offline
-tests in an isolated Chromium profile. It has not been installed/tested in the
-user's personal Chrome session. No real reviews were collected in this milestone.
+**Full-list live verification is pending.** The user manually tested the earlier
+build and reported three preview reviews, followed by failure after More reviews.
+The focused 0.1.2 fix is verified against saved fixtures and an isolated extension
+runtime; it has not been retested in the user's personal Chrome session.
 See [VERIFICATION.md](VERIFICATION.md).
 
 ## Install and collect on Windows
@@ -21,11 +22,14 @@ See [VERIFICATION.md](VERIFICATION.md).
 5. Open the supplied Piccolo Mondo URL from `examples\piccolo-mondo.url.txt` in this
    same normal Chrome profile. Confirm the restaurant is Piccolo Mondo at the
    intended location (the supplied URL points to the Ingolstadt area). Open the
-   full **Reviews / Rezensionen** panel yourself. Choose All reviews and the desired
+   full **More reviews / Weitere Rezensionen** panel yourself, or let Start click
+   that visible control. Choose All reviews and the desired
    sort order yourself; filters affect the accessible scope.
 6. Use Chrome's puzzle-piece menu to open **Restaurant Review Intelligence**.
    Pin it if convenient. Confirm the detected restaurant. Leave the text-review
-   limit at **30**, then click **Start Scraping**. The limit counts unique reviews
+   limit at **30**, then click **Start Scraping**. Start waits up to 10 seconds for
+   a verified full panel with accessible review cards. Preview cards are excluded.
+   The limit counts unique reviews
    with text; rating-only reviews are retained too. **0** removes the text-count
    limit, but other bounds remain.
 7. Keep the Maps tab open. The popup can close and reopen while collection
@@ -50,11 +54,11 @@ See [VERIFICATION.md](VERIFICATION.md).
 
 After editing extension files, reload the extension at `chrome://extensions` and
 refresh the Maps tab before another run. Existing saved reviews remain. Reloading
-the Maps tab, closing it, navigating, or restarting Chrome interrupts collection;
+the Maps tab, closing it, navigating to another place, or restarting Chrome interrupts collection;
 saved datasets can still be exported. Start creates a new dataset, preserving
 earlier runs in the Saved collection selector. Uninstalling the extension removes
-its local data. Export before uninstalling. No automatic resume across navigation
-or browser restart is attempted.
+its local data. Export before uninstalling. No automatic resume after a document
+reload or browser restart is attempted; same-place SPA panel transitions are supported.
 
 ## Behavior and limits
 
@@ -69,8 +73,24 @@ from review bodies; only export loads the selected dataset's bodies. See Chrome'
 [content-script documentation](https://developer.chrome.com/docs/extensions/develop/concepts/content-scripts)
 and [storage reference](https://developer.chrome.com/docs/extensions/reference/api/storage).
 
-The parser requires evidence of the full Reviews interface and locates the nearest
-scrollable ancestor of a review card. It never scrolls the map or document. DOM
+The parser distinguishes PREVIEW_MODE from FULL_REVIEWS_MODE using scoped interface
+evidence, rather than card count. An active full-reviews dialog takes precedence
+over preview cards. Labelled feeds/regions, scoped sort controls, and the selected
+Reviews / Rezensionen tab provide other full-interface evidence. It finds a
+scrollable container within that full interface and excludes the general sidebar
+and document. A Reviews-labelled preview feed alone cannot override More reviews.
+For layouts without recognized headings/tabs/feeds, a fallback combines the active
+place's observed reviews-route marker with a dedicated scrollable review container.
+It excludes overview controls, preview branches, and document scrolling. This is a
+heuristic for the reported layout, not a guarantee for every Maps variation.
+Lazy loading is expected: collection begins with currently rendered cards and
+reads new cards after scrolling; it never requires all reviews to be loaded or a
+match against a displayed review total. Forty cards alone do not establish mode.
+When no restaurant heading is available, the decoded place name in the Maps URL
+is used and marked as `url_path` in diagnostics and “from Maps URL” in the popup.
+When the route contains several businesses, identity keys use the final active
+place block, so an earlier business does not mask a change in the current target.
+It never scrolls the map or document. DOM
 selectors live in `review-parser.js` and may require changes as Maps changes. It
 clicks recognized More / Mehr controls, excluding owner replies. If expansion
 does not succeed, the card is skipped and shown under Unexpanded / skipped; an
@@ -101,6 +121,13 @@ new unique ID, 1,000 scrolls, and 30 minutes of wall time including pauses. In
 manual mode, supply more cards before the no-progress timeout or start a new run.
 The collector also stops on an accessible end marker, source/page change, closed
 panel, detected CAPTCHA/restriction/sign-in dialog, storage error, or user Stop.
+Same-place URL query/data changes and generic Reviews headings are tolerated.
+Place identifiers, place-path identity, and non-generic restaurant names guard
+against switching restaurants. The original source URL remains stable in exported
+records throughout a run. When a full panel is replaced, the collector waits up to
+10 seconds to reacquire it, retains deduplication state, and resumes observing the
+new panel. It pauses capture/scrolling when identity cannot be verified and stops
+with an exact reason if recovery fails. The same logic applies on Resume.
 Background-tab timer throttling can slow collection. Keep the tab visible for the
 proof of concept. No-progress/end markers describe accessible DOM exhaustion,
 **never guaranteed completeness**. No CAPTCHA solving or access-control evasion is
@@ -161,6 +188,21 @@ Test data never comes from live Maps. Playwright is a **development test tool** 
 is not included in the extension. Tests never use the personal Chrome profile.
 
 ## Real-data acceptance check (still pending)
+
+For the 0.1.2 fix, click **Reload** on this extension's card at
+`chrome://extensions`, then **refresh the Maps tab** to remove old injected scripts.
+Reopen the full More reviews panel and Start. Also retest Start from preview mode.
+Expand **Panel diagnostics** in the popup: check current URL, restaurant name,
+mode, detected/full-panel card counts, scrollable_found, panel evidence,
+start_failed_panel_detection, and stopping_reason. Panel reacquisitions are counted.
+`review_route_hint`, `restaurant_name_source`, and `scroll_candidates` explain the
+fallback. Each candidate reports only its tag/role, card count, client/scroll
+heights, and rejection reason—no review content or reviewer attributes. If
+`panel_evidence` is `reviews_route_scroller`, the route-and-scroller fallback was used.
+Diagnostics include no reviewer fields, cookies, credentials, or account details;
+concise Start-failure/reacquisition events are also logged with the `[RRI]` prefix
+in the Maps tab's content-script console. If detection fails, report these status
+fields, without sharing account/reviewer data.
 
 Use Piccolo Mondo in normal Chrome and record actual results in VERIFICATION.md:
 

@@ -1,0 +1,20 @@
+<!doctype html><html><head><meta charset="utf-8"><style>.jftiEf {min-height:100px} #lazy-scroll {height:280px;overflow-y:auto}</style></head><body>
+<!-- Synthetic layout matching reported symptoms, not a capture of the live DOM.
+     No heading, labelled feed/dialog, selected tab, or recognized sort button. -->
+<main role="main"><div><span>Reviews</span></div><div id="lazy-scroll"></div></main>
+<script>
+window.makeCard = index => {
+ const n=document.createElement('div'); n.className='jftiEf'; n.dataset.reviewId='lazy-'+index;
+ n.innerHTML='<span class="kvMYJc" aria-label="5 stars"></span><span class="rsqaWe">vor 2 Wochen</span><span class="wiI7pd"></span>';
+ n.querySelector('.wiI7pd').textContent='Synthetic lazy review '+index; return n;
+};
+for(let i=0;i<40;i++) document.querySelector('#lazy-scroll').append(makeCard(i));
+window.nextReview=40;
+document.querySelector('#lazy-scroll').addEventListener('scroll',function() {
+ // Only scroll-driven loading; the last page isn't present at Start.
+ if (nextReview>=60) return;
+ const last=nextReview+10;
+ this.querySelectorAll('.jftiEf').forEach((n,i)=>{if(i<20)n.remove()});
+ while(nextReview<last) this.append(makeCard(nextReview++));
+});
+</script></body></html>

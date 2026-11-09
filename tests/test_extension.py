@@ -111,7 +111,8 @@ def test_pause_resume_stop_and_manual_scroll(extension_page):
     ({"limit": 0, "maxIdle": 1}, "await collector.tick();", "no_progress"),
     ({"limit": 0, "maxScrolls": 0}, "", "scroll_budget"),
     ({"limit": 0, "maxMs": 0}, "", "time_budget"),
-    ({"limit": 0}, "document.querySelector('#panel').remove();", "review_panel_closed"),
+    # A zero grace period exercises permanent closure; the default now permits SPA replacement.
+    ({"limit": 0, "panelWaitMs": 0}, "document.querySelector('#panel').remove();", "review_panel_closed"),
     ({"limit": 0}, "document.querySelector('h1').textContent='Another place';", "page_changed"),
     ({"limit": 0}, "let n=document.createElement('p'); n.textContent='No more reviews'; collector.panel.append(n);", "accessible_end"),
     ({"limit": 0}, "let n=document.createElement('p'); n.textContent='Die Ansicht ist beschränkt'; document.body.append(n);", "restricted_view"),

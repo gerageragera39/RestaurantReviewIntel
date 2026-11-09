@@ -2,7 +2,7 @@
 
 **New collection route: normal-Chrome Manifest V3 extension.** The existing Python
 scraper is preserved. Load [`extension/`](extension/README.md) unpacked to collect
-from an already open full Google Maps Reviews panel in your regular Chrome
+from the full Google Maps Reviews panel in your regular Chrome
 session. No credentials or cookies are requested. It includes local persistence,
 pause/resume, bounded panel scrolling, JSON/CSV exports, and a Python importer:
 
@@ -10,13 +10,16 @@ pause/resume, bounded panel scrolling, JSON/CSV exports, and a Python importer:
 .\.venv\Scripts\python.exe -m rri.extension_import "C:\path\to\downloaded-reviews.json" --output-prefix data/exports/extension-import
 ```
 
-**Extension live milestone: NOT VERIFIED.** No real reviews were collected and
-0 of 10 records were manually checked. Browser-control tooling stopped before
-installation in personal Chrome; this does not establish a Maps access failure.
+**Extension full-list live milestone: NOT VERIFIED.** The user reported three
+preview reviews but failure after More reviews in the earlier build. Version
+0.1.2 adds support for the reported lazy-list layout and fixes active-place identity
+when the URL retains earlier businesses. Prior panel-selection and SPA lifecycle
+fixes are preserved; the live
+retest and the 30-review/10-manual-check milestone remain pending.
 Offline fixtures and a real unpacked-extension storage/export test run separately
 from the pending [live acceptance check](extension/VERIFICATION.md).
-The repository suite passes **193 tests**, with **1 opt-in live test skipped**;
-38 tests specifically exercise the extension DOM, exports, importer, and MV3 runtime.
+The repository suite passes **221 tests**, with **1 opt-in live test skipped**;
+66 tests specifically exercise the extension DOM, panels, exports, importer, and MV3 runtime.
 
 A local-first Python 3.11+ university review-collection project. Playwright Chromium
 reads the rendered Google Maps DOM. No paid API, undocumented review endpoint,

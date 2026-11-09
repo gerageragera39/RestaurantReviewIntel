@@ -6,3 +6,4 @@ button { padding: 8px 10px; cursor: pointer; border: 1px solid #dadce0; border-r
 #start { background: #1967d2; color: white; } button:disabled { opacity: .45; cursor: default; }
 dl { display: grid; grid-template-columns: 1fr auto; gap: 5px; } dd { margin: 0; font-variant-numeric: tabular-nums; }
 #status { overflow-wrap: anywhere; padding: 8px; background: #eef3fa; } .hint { color: #5f6368; font-size: 12px; }
+pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 11px; } details { margin: 10px 0; }
