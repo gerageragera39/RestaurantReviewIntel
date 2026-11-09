@@ -1,0 +1,24 @@
+<!doctype html><html lang="de"><body style="min-height:2000px">
+<h1 aria-label="Sponsored">Unrelated sponsored restaurant</h1>
+<h1 class="DUwDvf">Fixture Restaurant</h1>
+<div role="main"><span role="img" aria-label="4 Rezensionen"></span></div>
+<button aria-label="Weitere Informationen zu öffentlichen Rezensionen" onclick="throw Error('Wrong review button')">Information</button>
+<button role="tab" aria-label="Rezensionen zu Fixture Restaurant" aria-selected="false"
+ onclick="this.setAttribute('aria-selected','true');document.querySelector('#reviews').hidden=false">Rezensionen</button>
+<section id="reviews" hidden>
+<button role="radio" aria-label="Alle Rezensionen" aria-checked="true" onclick="this.setAttribute('aria-checked','true')">Alle Rezensionen</button>
+<button aria-label="Rezensionen sortieren" onclick="document.querySelector('#sort').hidden=false">Sortieren</button>
+<div id="sort" role="menu" hidden><button role="menuitemradio" onclick="window.newest=true;this.parentElement.hidden=true">Neueste</button></div>
+<div id="review-scroll" role="feed" style="height:320px;overflow-y:auto">
+  <div class="jftiEf" data-review-id="one" style="height:180px"><span class="kvMYJc" role="img" aria-label="5 Sterne"></span><span class="rsqaWe">vor einem Monat</span><span class="wiI7pd">First visible review.</span></div>
+  <div class="jftiEf" data-review-id="rating" style="height:180px"><span class="kvMYJc" role="img" aria-label="3 Sterne"></span><span class="rsqaWe">vor 2 Wochen</span></div>
+  <div class="jftiEf" data-review-id="two" style="height:180px"><span class="kvMYJc" role="img" aria-label="4 Sterne"></span><span class="rsqaWe">gestern</span><span class="wiI7pd">Second visible review.</span></div>
+</div></section>
+<script>
+window.newest=false;window.loads=0;
+document.querySelector('#review-scroll').addEventListener('scroll', function() {
+ if(window.loads++===0) {
+  this.insertAdjacentHTML('beforeend', '<div class="jftiEf" data-review-id="two" style="height:180px"><span class="kvMYJc" role="img" aria-label="4 Sterne"></span><span class="rsqaWe">gestern</span><span class="wiI7pd">Second visible review.</span></div><div class="jftiEf" data-review-id="three" style="height:180px"><span class="kvMYJc" role="img" aria-label="5 Sterne"></span><span class="rsqaWe">heute</span><span class="wiI7pd">Loaded after container scroll.</span></div>');
+ }
+});
+</script></body></html>

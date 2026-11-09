@@ -1,0 +1,38 @@
+# Python and local environments
+__pycache__/
+*.py[cod]
+.venv/
+.browsers/
+venv/
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Local settings, secrets, editor files
+.env
+.env.*
+!.env.example
+config.local.json
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Collected content and browser artifacts stay local
+data/*
+!data/exports/
+data/exports/*
+!data/exports/.gitkeep
+!data/debug/
+data/debug/*
+!data/debug/.gitkeep
+playwright-report/
+test-results/
+browser-profile/
+**/browser-profile*/
+*.log

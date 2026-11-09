@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "restaurant-review-intelligence"
+version = "0.3.0"
+description = "Local-first Google Maps review collection through the browser DOM."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = ["playwright>=1.40,<2"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10"]
+
+[project.scripts]
+rri = "rri.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+rri = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = ["--import-mode=importlib", "-ra"]
+markers = ["live: opt-in network integration against a supplied Google Maps URL"]

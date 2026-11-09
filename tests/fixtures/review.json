@@ -1,0 +1,12 @@
+{
+  "restaurant_url": "https://www.google.com/maps/place/Example+Restaurant/",
+  "restaurant_name": "Example Restaurant",
+  "review_id": "google_maps:native:fixture-001",
+  "text": "Lovely soup, €12.\nFriendly service — would return!",
+  "star_rating": 4,
+  "review_date_raw": "2 weeks ago",
+  "date_estimate": "2026-10-26",
+  "date_accuracy": "estimated",
+  "scraped_at": "2026-11-09T12:00:00+00:00",
+  "review_url": "https://www.google.com/maps/reviews/fixture-001"
+}

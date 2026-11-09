@@ -1,0 +1,17 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"></head><body>
+<main role="main"><h1 class="DUwDvf">Fixture Restaurant</h1>
+<button role="tab" aria-selected="true">Reviews</button><button aria-label="Sort reviews">Sort reviews</button>
+<div id="panel" role="feed" aria-label="Reviews" style="height:260px;overflow-y:auto">
+<div class="jftiEf" data-review-id="text-en"><span class="kvMYJc" aria-label="4 stars"></span><span class="rsqaWe">2 weeks ago</span><span class="wiI7pd">Soup…</span><button onclick="this.previousElementSibling.innerText='Soup was lovely.\nFriendly service, €12 — would return!';this.remove()">More</button><div class="owner-response"><span class="wiI7pd">Owner reply excluded.</span></div></div>
+<div class="jftiEf" data-review-id="text-de"><span class="kvMYJc" aria-label="5 Sterne"></span><span class="rsqaWe">vor 2 Wochen</span><span class="wiI7pd">Essen…</span><button aria-expanded="false" onclick="this.previousElementSibling.textContent='Sehr gutes Essen — große Portionen!';this.remove()">Mehr</button></div>
+<div class="jftiEf" data-review-id="rating-only"><span class="kvMYJc" aria-label="3 stars"></span><span class="rsqaWe">a month ago</span></div>
+<div class="jftiEf" data-review-id="missing-date"><span class="kvMYJc" aria-label="4,0 von 5 Sternen"></span><span class="wiI7pd">No date displayed.</span></div>
+<div style="height:900px"></div>
+</div></main>
+<script>
+window.addCard = (id, text = 'New review') => {
+ const card = document.createElement('div'); card.className = 'jftiEf'; card.dataset.reviewId = id;
+ card.innerHTML = '<span class="kvMYJc" aria-label="5 stars"></span><span class="rsqaWe">vor einem Jahr</span><span class="wiI7pd"></span>';
+ card.querySelector('.wiI7pd').textContent = text; document.querySelector('#panel').append(card); return card;
+};
+</script></body></html>

@@ -1,0 +1,8 @@
+body { width: 350px; padding: 16px; font: 14px/1.45 system-ui, sans-serif; color: #202124; background: #fff; }
+h1 { font-size: 18px; margin: 0 0 12px; } #restaurant { font-weight: 600; }
+label { display: block; margin: 12px 0; } input[type=number], select { display: block; width: 100%; box-sizing: border-box; padding: 7px; margin-top: 4px; }
+.check { display: flex; gap: 6px; align-items: center; } .actions { display: flex; gap: 7px; }
+button { padding: 8px 10px; cursor: pointer; border: 1px solid #dadce0; border-radius: 5px; background: #f8f9fa; color: #202124; }
+#start { background: #1967d2; color: white; } button:disabled { opacity: .45; cursor: default; }
+dl { display: grid; grid-template-columns: 1fr auto; gap: 5px; } dd { margin: 0; font-variant-numeric: tabular-nums; }
+#status { overflow-wrap: anywhere; padding: 8px; background: #eef3fa; } .hint { color: #5f6368; font-size: 12px; }

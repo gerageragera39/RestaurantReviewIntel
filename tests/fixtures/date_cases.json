@@ -1,0 +1,266 @@
+[
+  {
+    "text": "2026-10-01",
+    "reference": "2026-11-09",
+    "date": "2026-10-01",
+    "accuracy": "exact"
+  },
+  {
+    "text": "October 1, 2026",
+    "reference": "2026-11-09",
+    "date": "2026-10-01",
+    "accuracy": "exact"
+  },
+  {
+    "text": "1 Oct 2026",
+    "reference": "2026-11-09",
+    "date": "2026-10-01",
+    "accuracy": "exact"
+  },
+  {
+    "text": "  1   OCT 2026  ",
+    "reference": "2026-11-09",
+    "date": "2026-10-01",
+    "accuracy": "exact"
+  },
+  {
+    "text": "February 29, 2024",
+    "reference": "2026-11-09",
+    "date": "2024-02-29",
+    "accuracy": "exact"
+  },
+  {
+    "text": "today",
+    "reference": "2026-11-09",
+    "date": "2026-11-09",
+    "accuracy": "estimated"
+  },
+  {
+    "text": "yesterday",
+    "reference": "2026-11-09",
+    "date": "2026-11-08",
+    "accuracy": "estimated"
+  },
+  {
+    "text": "a day ago",
+    "reference": "2026-11-09",
+    "date": "2026-11-08",
+    "accuracy": "estimated"
+  },
+  {
+    "text": "2 days ago",
+    "reference": "2026-11-09",
+    "date": "2026-11-07",
+    "accuracy": "estimated"
+  },
+  {
+    "text": "2 weeks ago",
+    "reference": "2026-11-09",
+    "date": "2026-10-26",
+    "accuracy": "estimated"
+  },
+  {
+    "text": "a month ago",
+    "reference": "2026-03-31",
+    "date": "2026-02-28",
+    "accuracy": "estimated"
+  },
+  {
+    "text": "a month ago",
+    "reference": "2024-03-31",
+    "date": "2024-02-29",
+    "accuracy": "estimated"
+  },
+  {
+    "text": "2 months ago",
+    "reference": "2026-01-31",
+    "date": "2025-11-30",
+    "accuracy": "estimated"
+  },
+  {
+    "text": "a year ago",
+    "reference": "2024-02-29",
+    "date": "2023-02-28",
+    "accuracy": "estimated"
+  },
+  {
+    "text": "3 years ago",
+    "reference": "2026-11-09",
+    "date": "2023-11-09",
+    "accuracy": "estimated"
+  },
+  {
+    "text": "an hour ago",
+    "reference": "2026-11-09",
+    "date": null,
+    "accuracy": "unknown"
+  },
+  {
+    "text": "5 minutes ago",
+    "reference": "2026-11-09",
+    "date": null,
+    "accuracy": "unknown"
+  },
+  {
+    "text": "",
+    "reference": "2026-11-09",
+    "date": null,
+    "accuracy": "unknown"
+  },
+  {
+    "text": "vor 2 Wochen",
+    "reference": "2026-11-09",
+    "date": "2026-10-26",
+    "accuracy": "estimated"
+  },
+  {
+    "text": "11/09/2026",
+    "reference": "2026-11-09",
+    "date": null,
+    "accuracy": "unknown"
+  },
+  {
+    "text": "Edited 2 weeks ago",
+    "reference": "2026-11-09",
+    "date": null,
+    "accuracy": "unknown"
+  },
+  {
+    "text": "2026-11-10",
+    "reference": "2026-11-09",
+    "date": null,
+    "accuracy": "unknown"
+  },
+  {
+    "text": "February 30, 2026",
+    "reference": "2026-11-09",
+    "date": null,
+    "accuracy": "unknown"
+  },
+  {
+    "text": "2026-02-29",
+    "reference": "2026-11-09",
+    "date": null,
+    "accuracy": "unknown"
+  },
+  {
+    "text": "1 Madeup 2026",
+    "reference": "2026-11-09",
+    "date": null,
+    "accuracy": "unknown"
+  },
+  {
+    "text": "999999999999 months ago",
+    "reference": "2026-11-09",
+    "date": null,
+    "accuracy": "unknown"
+  },
+  {
+    "text": "999999999999 days ago",
+    "reference": "2026-11-09",
+    "date": null,
+    "accuracy": "unknown"
+  },
+  {
+    "text": "vor einem Tag",
+    "reference": "2026-11-09",
+    "date": "2026-11-08",
+    "accuracy": "estimated"
+  },
+  {
+    "text": "vor 3 Tagen",
+    "reference": "2026-11-09",
+    "date": "2026-11-06",
+    "accuracy": "estimated"
+  },
+  {
+    "text": "vor einer Woche",
+    "reference": "2026-11-09",
+    "date": "2026-11-02",
+    "accuracy": "estimated"
+  },
+  {
+    "text": "vor einem Monat",
+    "reference": "2024-03-31",
+    "date": "2024-02-29",
+    "accuracy": "estimated"
+  },
+  {
+    "text": "vor 11 Monaten",
+    "reference": "2026-11-09",
+    "date": "2025-12-09",
+    "accuracy": "estimated"
+  },
+  {
+    "text": "vor einem Jahr",
+    "reference": "2026-11-09",
+    "date": "2025-11-09",
+    "accuracy": "estimated"
+  },
+  {
+    "text": "vor 2 Jahren",
+    "reference": "2026-11-09",
+    "date": "2024-11-09",
+    "accuracy": "estimated"
+  },
+  {
+    "text": "heute",
+    "reference": "2026-11-09",
+    "date": "2026-11-09",
+    "accuracy": "estimated"
+  },
+  {
+    "text": "gestern",
+    "reference": "2026-11-09",
+    "date": "2026-11-08",
+    "accuracy": "estimated"
+  },
+  {
+    "text": "vor einer Stunde",
+    "reference": "2026-11-09",
+    "date": null,
+    "accuracy": "unknown"
+  },
+  {
+    "text": "vor 20 Minuten",
+    "reference": "2026-11-09",
+    "date": null,
+    "accuracy": "unknown"
+  },
+  {
+    "text": "Bearbeitet: vor 2 Wochen",
+    "reference": "2026-11-09",
+    "date": null,
+    "accuracy": "unknown"
+  },
+  {
+    "text": "1. Oktober 2026",
+    "reference": "2026-11-09",
+    "date": "2026-10-01",
+    "accuracy": "exact"
+  },
+  {
+    "text": "1. Okt. 2026",
+    "reference": "2026-11-09",
+    "date": "2026-10-01",
+    "accuracy": "exact"
+  },
+  {
+    "text": "9.11.2026",
+    "reference": "2026-11-09",
+    "date": "2026-11-09",
+    "accuracy": "exact"
+  },
+  {
+    "text": "29.02.2025",
+    "reference": "2026-11-09",
+    "date": null,
+    "accuracy": "unknown"
+  },
+  {
+    "text": "vor 999999999999 Monaten",
+    "reference": "2026-11-09",
+    "date": null,
+    "accuracy": "unknown"
+  }
+]

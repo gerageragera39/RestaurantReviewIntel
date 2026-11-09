@@ -1,0 +1,14 @@
+{
+  "limit": 50,
+  "headed": true,
+  "timeout_ms": 30000,
+  "collection_timeout_ms": 180000,
+  "max_scroll_iterations": 100,
+  "max_idle_iterations": 5,
+  "scroll_wait_ms": 1500,
+  "debug": false,
+  "debug_dir": "data/debug",
+  "export_dir": "data/exports",
+  "profile_dir": null,
+  "report_dir": "data/reports"
+}
