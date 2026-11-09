@@ -1,6 +1,6 @@
 (() => {
   const R = globalThis.RRI = globalThis.RRI || {};
-  R.version = '0.1.6';
+  R.version = '0.1.7';
   R.selectors = {
     card: '.jftiEf, [role="article"][data-review-id], div[data-review-id]',
     text: '.wiI7pd, [data-review-text]',
@@ -56,9 +56,26 @@
     return Number.isFinite(+result) && result <= ref && result.getUTCFullYear() >= 1000
       ? {date_estimate: iso(result), date_is_exact: exact} : unknown;
   };
-  R.moreButtons = card => [...card.querySelectorAll('button')].filter(b =>
-    !b.closest('.owner-response, .CDe7pd') && [b.textContent, b.getAttribute('aria-label')].some(value =>
-      /^(more|see more|read more|mehr|mehr anzeigen|weiterlesen|ещ[её]|читать дальше|показать полностью|подробнее)$/i.test((value || '').trim())));
+  R.reviewTextNode = card => [...card.querySelectorAll(R.selectors.text)].find(n => !n.closest('.owner-response, .CDe7pd'));
+  R.nativeReviewId = card => card.getAttribute('data-review-id') || card.querySelector('[data-review-id]')?.getAttribute('data-review-id') || null;
+  R.moreButtons = card => {
+    const text = R.reviewTextNode(card);
+    if (!text) return [];
+    return [...card.querySelectorAll('button, [role="button"]')].filter(b => {
+      if (b.closest('.owner-response, .CDe7pd') || b.getAttribute('aria-expanded') === 'true') return false;
+      const more = [b.textContent, b.getAttribute('aria-label')].some(value =>
+        /^(?:more|see more|read more|show more|read full review|mehr|mehr anzeigen|weiterlesen|ещ[её]|читать дальше|показать полностью|подробнее)(?:\s*(?:…|\.\.\.))?$/i.test((value || '').trim()));
+      if (!more) return false;
+      if (text.contains(b) || (text.id && b.getAttribute('aria-controls') === text.id)) return true;
+      // Text-expansion controls share the review-body branch. More buttons in
+      // price/service metadata or owner replies must not block the body export.
+      if (b.parentElement === card) return b.previousElementSibling === text;
+      for (let branch = b.parentElement, depth = 0; branch && branch !== card && depth < 3; branch = branch.parentElement, depth++) {
+        if (branch.contains(text)) return true;
+      }
+      return false;
+    });
+  };
   R.visible = node => !!node.getClientRects().length && getComputedStyle(node).visibility !== 'hidden';
   const label = node => (node.getAttribute('aria-label') || node.textContent || '').replace(/\s+/g, ' ').trim();
   const reviewLabel = /reviews|rezensionen|bewertungen|отзыв/i;
@@ -143,14 +160,14 @@
     const label = card.querySelector(R.selectors.rating)?.getAttribute('aria-label') || '';
     const match = label.trim().match(/^([1-5])(?:[.,]0)?\s*(?:out of 5\s*|von 5\s*|из 5\s*)?(?:stars?|sterne?n?|зв[её]зд(?:а|ы)?)(?=$|\s)/i);
     if (!match || R.moreButtons(card).length) return null;
-    const textNode = [...card.querySelectorAll(R.selectors.text)].find(n => !n.closest('.owner-response, .CDe7pd'));
+    const textNode = R.reviewTextNode(card);
     // textContent works on detached virtualized nodes too. Preserve displayed date verbatim.
     const copy = textNode?.cloneNode(true);
+    copy?.querySelectorAll('button, [role="button"]').forEach(n => n.remove());
     copy?.querySelectorAll('br').forEach(n => n.replaceWith('\n'));
     const text = copy?.textContent.trim() || '';
-    if (/[.…]{1,3}$/.test(text) && card.querySelector('button.w8nwRe[aria-expanded="false"]')) return null;
     const date_raw = card.querySelector(R.selectors.date)?.textContent || '';
-    const nativeId = card.getAttribute('data-review-id') || card.querySelector('[data-review-id]')?.getAttribute('data-review-id');
+    const nativeId = R.nativeReviewId(card);
     return {...context, review_id: nativeId ? `google_maps:native:${nativeId}` : null,
       rating: +match[1], text, date_raw, ...R.parseDate(date_raw), scraped_at: new Date().toISOString()};
   };

@@ -59,7 +59,7 @@ def test_real_extension_tab_start_and_log_export_after_popup_reopen(tmp_path, fa
             download_info.value.save_as(destination)
             report = json.loads(destination.read_text(encoding="utf-8"))
             assert report["type"] == "rri_diagnostic_log"
-            assert report["journal"]["extension_version"] == "0.1.6"
+            assert report["journal"]["extension_version"] == "0.1.7"
             events = report["journal"]["events"]
             assert any(e["event"] == "open_control_clicked" for e in events)
             if filter_case:

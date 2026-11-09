@@ -99,7 +99,7 @@ def test_detect_identifies_old_content_listener_even_with_new_parser(logging_pag
     p.evaluate("RRI.version='future-parser'")
     result = p.evaluate("() => new Promise(resolve=>messageHandler({type:'RRI',command:'detect'},{id:'fixture'},resolve))")
     assert result["data"]["extension_version"] == "future-parser"
-    assert result["data"]["content_script_version"] == "0.1.6"
+    assert result["data"]["content_script_version"] == "0.1.7"
 
 
 @pytest.mark.parametrize("label", ["23 reviews", "23 Rezensionen", "Отзывов: 23"])

@@ -108,7 +108,7 @@ def test_pause_resume_stop_and_manual_scroll(extension_page):
 
 @pytest.mark.parametrize("options,setup,reason", [
     ({"limit": 1}, "", "text_limit"),
-    ({"limit": 0, "maxIdle": 1}, "await collector.tick();", "no_progress"),
+    ({"limit": 0, "maxIdle": 1, "autoScroll": False}, "await collector.tick();", "no_progress"),
     ({"limit": 0, "maxScrolls": 0}, "", "scroll_budget"),
     ({"limit": 0, "maxMs": 0}, "", "time_budget"),
     # A zero grace period exercises permanent closure; the default now permits SPA replacement.

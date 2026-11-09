@@ -28,7 +28,7 @@ def test_shared_main_does_not_reject_the_actual_review_scroller(shared_page):
     assert d["detected_review_cards"] == 10
     assert d["scroll_candidates"][0]["client_height"] == 1092
     assert d["scrollable_found"] is True
-    assert d["extension_version"] == "0.1.6"
+    assert d["extension_version"] == "0.1.7"
     assert d["scroll_candidates"][0]["opener_in_shared_main"] is True
     assert d["scroll_candidates"][0]["opener_inside"] is False
     assert d["scroll_candidates"][0]["rejection"] is None

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Restaurant Review Intelligence",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "minimum_chrome_version": "130",
   "description": "Collect displayed Google Maps reviews locally from the open Reviews panel.",
   "permissions": ["activeTab", "scripting", "storage", "unlimitedStorage"],
