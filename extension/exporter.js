@@ -16,4 +16,9 @@
     const a = document.createElement('a'); a.href = url; a.download = `reviews-${runId}.${format}`; a.click();
     setTimeout(() => URL.revokeObjectURL(url), 30000);
   };
+  R.downloadLog = (report, runId) => {
+    const url = URL.createObjectURL(new Blob([JSON.stringify(report, null, 2) + '\n'], {type: 'application/json;charset=utf-8'}));
+    const a = document.createElement('a'); a.href = url; a.download = `rri-log-${runId}.json`; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 30000);
+  };
 })();

@@ -83,11 +83,13 @@ def test_many_cards_alone_and_general_sidebar_are_rejected(lazy_page):
     p.evaluate("""() => {
       const h=document.createElement('h1');h.className='DUwDvf';h.textContent='Asia Imbiss Le';
       document.querySelector('#lazy-scroll').prepend(h);
+      const address=document.createElement('button');address.dataset.itemId='address';address.textContent='Business address control';
+      document.querySelector('#lazy-scroll').prepend(address);
     }""")
     d = p.evaluate("RRI.diagnostics()")
     assert d["detected_review_cards"] == 40
     assert d["scrollable_found"] is False
-    assert d["scroll_candidates"][0]["rejection"] == "overview_or_preview_container"
+    assert d["scroll_candidates"][0]["rejection"] == "business_details_in_scroller"
 
 
 def test_same_prior_business_but_different_active_target_stops(lazy_page):

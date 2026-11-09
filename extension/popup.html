@@ -2,15 +2,19 @@
 <html lang="en"><head><meta charset="utf-8"><title>Restaurant Review Intelligence</title><link rel="stylesheet" href="styles.css"></head>
 <body>
   <h1>Restaurant Review Intelligence</h1>
-  <p id="restaurant">Detecting restaurant…</p>
-  <label>Text review limit (0 = unlimited)<input id="limit" type="number" min="0" step="1" value="30"></label>
-  <label class="check"><input id="auto" type="checkbox" checked> Scroll review panel automatically</label>
-  <div class="actions"><button id="start">Start Scraping</button><button id="pause" disabled>Pause</button><button id="stop" disabled>Stop</button></div>
-  <label>Saved collection<select id="runs"><option value="">No saved collections</option></select></label>
-  <dl><dt>Collected card versions</dt><dd id="observed">0</dd><dt>Unique reviews</dt><dd id="unique">0</dd><dt>With text</dt><dd id="withText">0</dd><dt>With dates</dt><dd id="withDates">0</dd><dt>Unexpanded / skipped</dt><dd id="unexpanded">0</dd></dl>
+  <label>Language / Sprache / Язык<select id="language" aria-label="Language / Sprache / Язык"><option value="en">English</option><option value="de">Deutsch</option><option value="ru">Русский</option></select></label>
+  <p id="restaurant" data-i18n="detecting">Detecting restaurant…</p>
+  <label><span data-i18n="limit">Text review limit (0 = unlimited)</span><input id="limit" type="number" min="0" step="1" value="30"></label>
+  <label class="check"><input id="auto" type="checkbox" checked><span data-i18n="auto">Scroll review panel automatically</span></label>
+  <div class="actions"><button id="start" data-i18n="start">Start Scraping</button><button id="pause" data-i18n="pause" disabled>Pause</button><button id="stop" data-i18n="stop" disabled>Stop</button></div>
+  <p><button id="logs" data-i18n="logs" disabled>Download log</button></p>
+  <label><span data-i18n="saved">Saved collection</span><select id="runs"><option value="" data-i18n="empty">No saved collections</option></select></label>
+  <dl><dt data-i18n="observed">Collected card versions</dt><dd id="observed">0</dd><dt data-i18n="unique">Unique reviews</dt><dd id="unique">0</dd><dt data-i18n="withText">With text</dt><dd id="withText">0</dd><dt data-i18n="withDates">With dates</dt><dd id="withDates">0</dd><dt data-i18n="unexpanded">Unexpanded / skipped</dt><dd id="unexpanded">0</dd></dl>
   <p id="status" role="status" aria-live="polite">Ready</p>
-  <details><summary>Panel diagnostics</summary><pre id="diagnostics">Not detected yet</pre></details>
-  <div class="actions"><button id="json" disabled>Export JSON</button><button id="csv" disabled>Export CSV</button></div>
-  <p class="hint">Start opens More reviews / Weitere Rezensionen when available, or open the full list yourself. Keep the Maps tab open. Pause stops collection; manual scrolling works while running with automatic scrolling off. Unlimited stops on no progress or safety bounds and does not guarantee completeness.</p>
-  <script src="exporter.js"></script><script src="popup.js"></script>
+  <details><summary data-i18n="diagnostics">Panel diagnostics</summary><pre id="diagnostics">Not detected yet</pre></details>
+  <details id="log-details"><summary data-i18n="logTitle">Collection log</summary><pre id="log-view"></pre></details>
+  <div class="actions"><button id="json" data-i18n="json" disabled>Export JSON</button><button id="csv" data-i18n="csv" disabled>Export CSV</button></div>
+  <p class="hint" data-i18n="logHint">The log is available even if Start fails.</p>
+  <p class="hint" data-i18n="hint">Start opens More reviews when available. Keep Maps open.</p>
+  <script src="exporter.js"></script><script src="i18n.js"></script><script src="popup.js"></script>
 </body></html>

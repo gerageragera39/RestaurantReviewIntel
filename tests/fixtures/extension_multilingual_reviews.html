@@ -1,0 +1,40 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"></head><body>
+<!-- Synthetic EN/DE/RU fixture. Russian labels/ratings/relative dates include
+     strings observed on LEON's live page; review bodies here are invented. -->
+<main role="main"><h1 class="DUwDvf">Fixture Restaurant</h1><div style="height:280px;overflow:auto">
+<div class="jftiEf" data-review-id="preview-a"><span role="img" aria-label="5 stars"></span><span class="rsqaWe">3 weeks ago</span><span class="wiI7pd">Preview A</span></div>
+<div class="jftiEf" data-review-id="preview-b"><span role="img" aria-label="5 stars"></span><span class="rsqaWe">3 weeks ago</span><span class="wiI7pd">Preview B</span></div>
+<div class="jftiEf" data-review-id="preview-c"><span role="img" aria-label="5 stars"></span><span class="rsqaWe">3 weeks ago</span><span class="wiI7pd">Preview C</span></div>
+<button id="open-reviews" onclick="openLocalizedReviews()">More reviews (20)</button></div></main>
+<template id="full-template"><section role="dialog" id="full-list"><h1></h1><button id="sort"></button>
+<div id="review-scroll" style="height:220px;overflow-y:auto">
+<div class="jftiEf" data-review-id="full-a"><span role="img" class="rating"></span><span class="rsqaWe"></span><span class="wiI7pd">Text…</span><button class="expand" onclick="this.previousElementSibling.textContent=locale.full;this.remove()"></button></div>
+<div class="jftiEf" data-review-id="full-b"><span role="img" class="rating"></span><span class="rsqaWe"></span></div>
+<div style="height:1000px"></div></div></section></template>
+<script>
+window.locales={
+ en:{open:'More reviews (20)',title:'Reviews',label:'Reviews for Fixture Restaurant',sort:'Sort reviews',rating:'5 stars',date:'3 weeks ago',month:'a month ago',more:'More',full:'Complete English review.',later:'Loaded later.'},
+ de:{open:'Weitere Rezensionen (20)',title:'Rezensionen',label:'Rezensionen für Fixture Restaurant',sort:'Rezensionen sortieren',rating:'5 Sterne',date:'vor 3 Wochen',month:'vor einem Monat',more:'Mehr',full:'Vollständige deutsche Rezension.',later:'Später geladen.'},
+ ru:{open:'Ещё отзывы (20)',title:'Отзывы',label:'Отзывы о месте "Fixture Restaurant"',sort:'Сортировать отзывы',rating:'5 звезд',date:'3 недели назад',month:'месяц назад',more:'Ещё',full:'Полный текст отзыва.',later:'Загружено после прокрутки.'}
+};
+window.showLocale=lang=>{
+ window.locale=locales[lang];document.documentElement.lang=lang==='ru'?'ru-DE':lang;
+ document.querySelector('#open-reviews').textContent=locale.open;
+ document.querySelectorAll('main [role=img]').forEach(n=>n.setAttribute('aria-label',locale.rating));
+ document.querySelectorAll('main .rsqaWe').forEach(n=>n.textContent=locale.date);
+};
+window.openLocalizedReviews=()=>{
+ document.body.append(document.querySelector('#full-template').content.cloneNode(true));
+ const root=document.querySelector('#full-list');root.setAttribute('aria-label',locale.label);root.querySelector('h1').textContent=locale.title;
+ root.querySelector('#sort').setAttribute('aria-label',locale.sort);root.querySelector('#sort').textContent=locale.sort;
+ root.querySelectorAll('.rating').forEach(n=>n.setAttribute('aria-label',locale.rating));
+ root.querySelectorAll('.rsqaWe').forEach((n,i)=>n.textContent=i?locale.month:locale.date);
+ root.querySelector('.expand').textContent=locale.more;
+ root.querySelector('#review-scroll').addEventListener('scroll',function(){
+   if(this.dataset.loaded)return;this.dataset.loaded='true';
+   const n=this.querySelector('.jftiEf').cloneNode(true);n.dataset.reviewId='full-c';n.querySelector('.wiI7pd').textContent=locale.later;
+   this.append(n);this.querySelector('.jftiEf').remove();
+ });
+};
+showLocale('en');
+</script></body></html>

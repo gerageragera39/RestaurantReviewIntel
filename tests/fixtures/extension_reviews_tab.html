@@ -1,0 +1,26 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><style>.jftiEf{min-height:120px}</style></head><body>
+<!-- Synthetic Reviews-tab transition with retained business controls. -->
+<main role="main"><h1 class="DUwDvf">Fixture Restaurant</h1>
+<button role="tab" id="overview-tab" aria-selected="true">Overview</button><button role="tab" id="reviews-tab" aria-selected="false" onclick="openViaTab()">Reviews</button>
+<div id="overview"><button data-item-id="address">Business address control</button>
+<div class="jftiEf" data-review-id="preview-only"><span class="kvMYJc" aria-label="5 stars"></span><span class="rsqaWe">yesterday</span><span class="wiI7pd">PRIVATE_REVIEW_TEXT_NOT_FOR_LOGS</span><h2>PRIVATE_REVIEWER_NOT_FOR_LOGS</h2></div>
+<button id="more-button" onclick="window.moreClicks++;openViaTab()">More reviews</button></div>
+</main>
+<template id="full"><div id="tab-scroll" style="height:230px;overflow:auto"><button data-item-id="address">Retained business control</button>
+<div class="jftiEf" data-review-id="tab-first"><span class="kvMYJc" aria-label="5 stars"></span><span class="rsqaWe">a week ago</span><span class="wiI7pd">PRIVATE_REVIEW_TEXT_NOT_FOR_LOGS</span><h2>PRIVATE_REVIEWER_NOT_FOR_LOGS</h2></div><div style="height:1100px"></div></div></template>
+<script>
+window.tabClicks=0;window.moreClicks=0;
+window.openViaTab=()=>{
+ window.tabClicks++;
+ document.querySelector('#overview').remove();
+ document.querySelector('#overview-tab').setAttribute('aria-selected','false');document.querySelector('#reviews-tab')?.setAttribute('aria-selected','true');
+ document.querySelector('main').append(document.querySelector('#full').content.cloneNode(true));
+ if(!document.querySelector('#reviews-tab')) {
+  const list=document.querySelector('#tab-scroll');list.setAttribute('role','feed');list.setAttribute('aria-label','Reviews');list.querySelector('[data-item-id]')?.remove();
+ }
+ document.querySelector('#tab-scroll').addEventListener('scroll',function(){
+  if(this.dataset.loaded)return;this.dataset.loaded='true';
+  const n=this.querySelector('.jftiEf').cloneNode(true);n.dataset.reviewId='tab-loaded';this.append(n);
+ });
+};
+</script></body></html>

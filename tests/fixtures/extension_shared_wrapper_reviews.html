@@ -1,0 +1,20 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+body {margin:0;overflow:hidden} #actual-reviews {height:1092px;overflow-y:auto} .jftiEf {height:400px}
+</style></head><body><main role="main">
+<!-- Synthetic shared-wrapper layout, not the user's live HTML. The opener is
+     outside the scroller and must not mark every child of main as a preview. -->
+<button id="outside-opener" onclick="window.moreClicks++">More reviews</button>
+<div id="actual-reviews"></div></main>
+<script>
+window.moreClicks=0; window.nextReview=10;
+window.makeReview = index => {
+ const n=document.createElement('div'); n.className='jftiEf'; n.dataset.reviewId='shared-'+index;
+ n.innerHTML='<span class="kvMYJc" aria-label="5 stars"></span><span class="rsqaWe">2 weeks ago</span><span class="wiI7pd"></span>';
+ n.querySelector('.wiI7pd').textContent='Synthetic shared-wrapper review '+index; return n;
+};
+for(let i=0;i<10;i++) document.querySelector('#actual-reviews').append(makeReview(i));
+document.querySelector('#actual-reviews').addEventListener('scroll',function(){
+ if(nextReview>=20) return;
+ while(nextReview<20) this.append(makeReview(nextReview++));
+});
+</script></body></html>

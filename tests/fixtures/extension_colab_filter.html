@@ -1,0 +1,30 @@
+<!doctype html><html lang="en-DE"><head><meta charset="utf-8"><style>
+body{margin:0;overflow:hidden} .jftiEf{height:400px} #full-scroll{height:1169px;overflow:auto}
+</style></head><body>
+<!-- Synthetic reproduction of the supplied log's transition, not live HTML.
+     The full list retains All reviews, which must not act as a preview opener. -->
+<main role="main"><h1 class="DUwDvf">co:Lab</h1>
+<button role="tab" id="overview-tab" aria-selected="true">Overview</button>
+<button role="tab" id="reviews-tab" aria-selected="false" onclick="openFullReviews()">Reviews</button>
+<div id="preview"><button data-item-id="address">Business address control</button><button>More reviews</button>
+<div class="jftiEf" data-review-id="preview"><span class="kvMYJc" aria-label="5 stars"></span><span class="rsqaWe">a week ago</span><span class="wiI7pd">Synthetic preview.</span></div></div>
+</main>
+<template id="full-template"><div id="full-scroll"><button id="filter">All reviews</button><div id="review-cards"></div><div style="height:800px"></div></div></template>
+<script>
+for(let i=1;i<3;i++){const n=document.querySelector('#preview .jftiEf').cloneNode(true);n.dataset.reviewId='preview-'+i;document.querySelector('#preview').append(n)}
+window.openFullReviews=()=>{
+ document.querySelector('#preview').remove();document.querySelector('h1').remove();
+ document.querySelector('#overview-tab').setAttribute('aria-selected','false');document.querySelector('#reviews-tab').setAttribute('aria-selected','true');
+ document.querySelector('main').append(document.querySelector('#full-template').content.cloneNode(true));
+ history.pushState({},'','/maps/place/co:Lab/data=!1s0x479efe56ab268415:0x784ef5717abe206!9m1!1b1!16s%2Fg%2F11c1wxyy_s');
+ for(let i=0;i<10;i++){
+  const n=document.createElement('div');n.className='jftiEf';n.dataset.reviewId='full-'+i;
+  n.innerHTML='<span class="kvMYJc" aria-label="5 stars"></span><span class="rsqaWe">2 weeks ago</span><span class="wiI7pd">Synthetic full review.</span>';
+  document.querySelector('#review-cards').append(n);
+ }
+ document.querySelector('#full-scroll').addEventListener('scroll',function(){
+  if(this.dataset.loaded)return;this.dataset.loaded='true';
+  const n=this.querySelector('.jftiEf').cloneNode(true);n.dataset.reviewId='after-scroll';this.querySelector('#review-cards').append(n);
+ });
+};
+</script></body></html>

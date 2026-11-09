@@ -12,14 +12,15 @@ pause/resume, bounded panel scrolling, JSON/CSV exports, and a Python importer:
 
 **Extension full-list live milestone: NOT VERIFIED.** The user reported three
 preview reviews but failure after More reviews in the earlier build. Version
-0.1.2 adds support for the reported lazy-list layout and fixes active-place identity
-when the URL retains earlier businesses. Prior panel-selection and SPA lifecycle
+0.1.6 fixes the opener/filter veto identified in the user's diagnostic log after
+Reviews successfully opened. Persisted logs, automatic opening/scrolling, English,
+German, Russian, active-place identity, lazy loading, and prior SPA lifecycle
 fixes are preserved; the live
 retest and the 30-review/10-manual-check milestone remain pending.
 Offline fixtures and a real unpacked-extension storage/export test run separately
 from the pending [live acceptance check](extension/VERIFICATION.md).
-The repository suite passes **221 tests**, with **1 opt-in live test skipped**;
-66 tests specifically exercise the extension DOM, panels, exports, importer, and MV3 runtime.
+The repository suite passes **307 tests**, with **1 opt-in live test skipped**;
+152 tests specifically exercise the extension DOM, logging, languages, panels, exports, importer, and MV3 runtime.
 
 A local-first Python 3.11+ university review-collection project. Playwright Chromium
 reads the rendered Google Maps DOM. No paid API, undocumented review endpoint,

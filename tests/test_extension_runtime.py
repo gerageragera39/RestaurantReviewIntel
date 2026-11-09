@@ -4,10 +4,78 @@ import json
 import shutil
 from pathlib import Path
 
+import pytest
 from playwright.sync_api import sync_playwright
 
 
 EXT = Path(__file__).resolve().parents[1] / "extension"
+
+
+@pytest.mark.parametrize("fail_to_open,fixture_name", [(False, "extension_reviews_tab.html"), (True, "extension_reviews_tab.html"), (False, "extension_colab_filter.html")])
+def test_real_extension_tab_start_and_log_export_after_popup_reopen(tmp_path, fail_to_open, fixture_name):
+    test_extension = tmp_path / "logging-extension"
+    shutil.copytree(EXT, test_extension)
+    manifest_path = test_extension / "manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest["host_permissions"] = ["https://www.google.com/*"]
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+    fixture = (Path(__file__).parent / "fixtures" / fixture_name).read_text(encoding="utf-8")
+    filter_case = fixture_name == "extension_colab_filter.html"
+    with sync_playwright() as pw:
+        context = pw.chromium.launch_persistent_context(
+            str(tmp_path / "logging-profile"), channel="chromium", headless=True,
+            args=[f"--disable-extensions-except={test_extension}", f"--load-extension={test_extension}"],
+        )
+        context.route("https://**/*", lambda route: route.fulfill(body=fixture, content_type="text/html") if route.request.url.startswith("https://www.google.com/maps/") else route.abort())
+        try:
+            manager = context.pages[0]
+            manager.goto("chrome://extensions")
+            item = manager.locator("extensions-item").filter(has_text="Restaurant Review Intelligence")
+            item.wait_for()
+            popup_url = f"chrome-extension://{item.get_attribute('id')}/popup.html"
+            maps = context.new_page()
+            maps.goto("https://www.google.com/maps/place/co:Lab/" if filter_case else "https://www.google.com/maps/place/Fixture+Restaurant/")
+            if fail_to_open:
+                maps.evaluate("document.querySelector('#reviews-tab').onclick=null;document.querySelector('#more-button').onclick=null")
+            popup = context.new_page()
+            popup.goto(popup_url)
+            result = popup.evaluate("""async () => {
+              const [tab]=await chrome.tabs.query({url:'https://www.google.com/maps/*'});
+              await chrome.scripting.executeScript({target:{tabId:tab.id},files:['review-parser.js','collector.js','content.js']});
+              return await chrome.tabs.sendMessage(tab.id,{type:'RRI',command:'start',options:{runId:'log-runtime',tabId:tab.id,limit:0,autoScroll:true,panelWaitMs:100}});
+            }""")
+            assert result["ok"] is not fail_to_open
+            if not fail_to_open:
+                assert maps.locator("#full-scroll" if filter_case else "#tab-scroll").evaluate("n=>n.scrollTop") > 0
+            popup.close()
+            popup = context.new_page()
+            popup.goto(popup_url)
+            popup.wait_for_function("() => !document.querySelector('#logs').disabled")
+            if fail_to_open:
+                assert popup.locator("#json").is_disabled()
+            with popup.expect_download() as download_info:
+                popup.locator("#logs").click()
+            destination = tmp_path / "diagnostic.json"
+            download_info.value.save_as(destination)
+            report = json.loads(destination.read_text(encoding="utf-8"))
+            assert report["type"] == "rri_diagnostic_log"
+            assert report["journal"]["extension_version"] == "0.1.6"
+            events = report["journal"]["events"]
+            assert any(e["event"] == "open_control_clicked" for e in events)
+            if filter_case:
+                assert report["run"]["unique"] >= 11
+                assert "Synthetic full review." not in destination.read_text(encoding="utf-8")
+            if fail_to_open:
+                assert report["journal"]["stopping_reason"] == "full_panel_not_ready"
+                assert any(e["event"] == "start_failed" for e in events)
+            else:
+                assert any(e["event"] == "scroll_result" and e["details"]["moved"] for e in events)
+            assert "PRIVATE_REVIEW_TEXT_NOT_FOR_LOGS" not in destination.read_text(encoding="utf-8")
+            assert "PRIVATE_REVIEWER_NOT_FOR_LOGS" not in destination.read_text(encoding="utf-8")
+            popup.locator("#log-details summary").click()
+            popup.wait_for_function("event => document.querySelector('#log-view').textContent.includes(event)", arg="start_failed" if fail_to_open else "scroll_result")
+        finally:
+            context.close()
 
 
 def test_real_message_bridge_collection_controls_and_export(tmp_path):
@@ -108,6 +176,22 @@ def test_real_extension_storage_popup_reopen_and_downloads(tmp_path):
                 if fmt == "json":
                     data = json.loads(body)
                     assert data[0]["rating"] == data[0]["star_rating"] == 5
+            # The same production popup localizes controls/status without changing
+            # review data and remembers each choice after closing/reopening it.
+            for language, start_label, status_label in (
+                ("de", "Sammlung starten", "gestoppt: fixture"),
+                ("ru", "Начать сбор", "остановлено: fixture"),
+                ("en", "Start Scraping", "stopped: fixture"),
+            ):
+                popup.locator("#language").select_option(language)
+                popup.wait_for_function("label=>document.querySelector('#status').textContent===label", arg=status_label)
+                popup.close()
+                popup = context.new_page()
+                popup.goto(popup_url)
+                popup.locator("#start").filter(has_text=start_label).wait_for()
+                assert popup.locator("html").get_attribute("lang") == language
+                assert popup.locator("#unique").inner_text() == "1"
+                popup.locator("body").screenshot(path=tmp_path / f"popup-{language}.png")
             # Survives an entire browser context restart, not just popup memory.
             popup.close()
         finally:

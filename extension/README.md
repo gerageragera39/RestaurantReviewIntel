@@ -6,7 +6,7 @@ cookies API, or Playwright at runtime. The existing Python application is preser
 
 **Full-list live verification is pending.** The user manually tested the earlier
 build and reported three preview reviews, followed by failure after More reviews.
-The focused 0.1.2 fix is verified against saved fixtures and an isolated extension
+The focused 0.1.6 fix is verified against saved fixtures and an isolated extension
 runtime; it has not been retested in the user's personal Chrome session.
 See [VERIFICATION.md](VERIFICATION.md).
 
@@ -22,13 +22,20 @@ See [VERIFICATION.md](VERIFICATION.md).
 5. Open the supplied Piccolo Mondo URL from `examples\piccolo-mondo.url.txt` in this
    same normal Chrome profile. Confirm the restaurant is Piccolo Mondo at the
    intended location (the supplied URL points to the Ingolstadt area). Open the
-   full **More reviews / Weitere Rezensionen** panel yourself, or let Start click
-   that visible control. Choose All reviews and the desired
+   full review panel yourself, or leave the restaurant overview open and let Start
+   click **Reviews / Rezensionen / Отзывы**, **More reviews / Weitere Rezensionen /
+   Ещё отзывы**, or the review-count button. Choose All reviews and the desired
    sort order yourself; filters affect the accessible scope.
 6. Use Chrome's puzzle-piece menu to open **Restaurant Review Intelligence**.
-   Pin it if convenient. Confirm the detected restaurant. Leave the text-review
+   Pin it if convenient. Choose **English / Deutsch / Русский** under
+   **Language / Sprache / Язык**. This choice is saved locally and changes the
+   popup controls, common statuses, messages, and help text; it does not change
+   Google Maps itself. Maps parsing recognizes all three languages independently
+   of this setting. Confirm the detected restaurant. Leave the text-review
    limit at **30**, then click **Start Scraping**. Start waits up to 10 seconds for
-   a verified full panel with accessible review cards. Preview cards are excluded.
+   a verified full panel with accessible review cards. It then immediately attempts
+   a panel scroll if automatic scrolling is enabled and the text limit isn't
+   already reached. Preview cards are excluded.
    The limit counts unique reviews
    with text; rating-only reviews are retained too. **0** removes the text-count
    limit, but other bounds remain.
@@ -76,12 +83,15 @@ and [storage reference](https://developer.chrome.com/docs/extensions/reference/a
 The parser distinguishes PREVIEW_MODE from FULL_REVIEWS_MODE using scoped interface
 evidence, rather than card count. An active full-reviews dialog takes precedence
 over preview cards. Labelled feeds/regions, scoped sort controls, and the selected
-Reviews / Rezensionen tab provide other full-interface evidence. It finds a
+Reviews / Rezensionen / Отзывы tab provide other full-interface evidence. It finds a
 scrollable container within that full interface and excludes the general sidebar
 and document. A Reviews-labelled preview feed alone cannot override More reviews.
 For layouts without recognized headings/tabs/feeds, a fallback combines the active
 place's observed reviews-route marker with a dedicated scrollable review container.
-It excludes overview controls, preview branches, and document scrolling. This is a
+It excludes visible business-detail actions or a More reviews opener inside the
+scroller, and excludes document scrolling. Sharing a parent `<main>` with an opener,
+retaining a place heading/tab strip, or containing hidden overview controls does
+not reject an otherwise valid reviews-route scroller. This is a
 heuristic for the reported layout, not a guarantee for every Maps variation.
 Lazy loading is expected: collection begins with currently rendered cards and
 reads new cards after scrolling; it never requires all reviews to be loaded or a
@@ -92,7 +102,7 @@ When the route contains several businesses, identity keys use the final active
 place block, so an earlier business does not mask a change in the current target.
 It never scrolls the map or document. DOM
 selectors live in `review-parser.js` and may require changes as Maps changes. It
-clicks recognized More / Mehr controls, excluding owner replies. If expansion
+clicks recognized More / Mehr / Ещё controls, excluding owner replies. If expansion
 does not succeed, the card is skipped and shown under Unexpanded / skipped; an
 incomplete string isn't exported as full text. Empty text is valid for rating-only
 reviews. Missing dates remain empty strings, with unknown date precision.
@@ -160,6 +170,14 @@ against the browser's local calendar day, with month-end clamping. Sub-day,
 unrecognized, edited, ambiguous, impossible, and future dates remain unknown.
 Original labels always survive, and relative labels never become exact dates.
 
+English, German, and Russian dates are supported in the extension: for example,
+`3 weeks ago`, `vor 3 Wochen`, `3 недели назад`, `неделю назад`, and Russian month
+names (`9 ноября 2026`). Russian relative labels remain estimated; sub-day,
+edited, invalid, future, or otherwise unrecognized labels remain unknown. Raw
+dates and review text are preserved verbatim in all popup languages. JSON/CSV
+column names, machine status/diagnostic keys, and the Python importer schema stay
+stable. Technical error details can retain their original wording.
+
 ## Offline tests
 
 ```powershell
@@ -187,17 +205,82 @@ permissions. This does not verify the real toolbar permission grant.
 Test data never comes from live Maps. Playwright is a **development test tool** and
 is not included in the extension. Tests never use the personal Chrome profile.
 
+## Diagnostic logs and troubleshooting
+
+After pressing Start, expand **Collection log / Sammlungsprotokoll / Журнал сбора**
+to see the last 12 events, or use **Download log / Protokoll herunterladen /
+Скачать журнал** to download `rri-log-<run>.json`. The log remains downloadable
+after a panel-detection failure with zero reviews, popup closing/reopening, or
+navigation, as long as local storage writes succeeded. Saved runs select their own
+logs. The in-tab console also receives the same `[RRI]` events.
+
+The file includes stage timestamps/elapsed time, source URL/restaurant identity,
+matched control kind, panel-detection decisions, unique/parsed/skipped counts,
+requested scrolls and measured before/after positions, and the stopping reason.
+It does not contain review bodies, reviewer names, avatars, account details,
+credentials, cookies, full page HTML, or a browser profile. It is separate from
+review JSON/CSV export and does not change that schema.
+
+Interpret key events as follows:
+
+| Event | Meaning |
+| --- | --- |
+| `start_requested` | Options and initial detection, including whether auto-scroll is enabled |
+| `open_control_found`, `open_control_clicked` | A Reviews tab, More reviews button, or count button was selected/clicked through normal UI; this alone does not prove the list opened |
+| `panel_detection`, `panel_ready` | Scoped container candidates/rejections and successful list detection |
+| `initial_collection` | Persisted starting counts, unresolved expansions, and rejected card parses |
+| `scroll_requested`, `scroll_result` | Requested panel movement and actual `before`, `after`, `moved` measurements |
+| `manual_scrolling_enabled` | Automatic scrolling was unchecked |
+| `start_failed`, `collection_stopped` | Exact reason no collection/scrolling began, or why it ended |
+
+The log keeps at most 300 events: the first 20 plus the latest 280, with a dropped
+count. Writes are serialized/debounced locally. Committed logs survive popup/tab
+closing; an abrupt page/browser shutdown may lose pending writes. Export before
+uninstalling the extension, which clears its storage.
+
+To reproduce a no-scroll issue, reload the extension, refresh Maps, leave the
+restaurant overview open, set the limit to **0** and enable automatic scrolling.
+Press Start, wait for collection or the error, then download the log. A nonzero
+limit already reached by initial cards correctly stops before scrolling and is
+recorded as `text_limit`. An access restriction is logged before any UI click.
+No CAPTCHA/authentication bypass is attempted.
+
+The popup compares the installed extension version with the live content-handler
+version. If they differ, it explicitly requests a Maps-tab refresh; a newly
+injected parser cannot disguise an older message handler. Saved data/log export
+remains accessible even when that startup check fails.
+
 ## Real-data acceptance check (still pending)
 
-For the 0.1.2 fix, click **Reload** on this extension's card at
+For the 0.1.6 fix, click **Reload** on this extension's card at
 `chrome://extensions`, then **refresh the Maps tab** to remove old injected scripts.
 Reopen the full More reviews panel and Start. Also retest Start from preview mode.
 Expand **Panel diagnostics** in the popup: check current URL, restaurant name,
 mode, detected/full-panel card counts, scrollable_found, panel evidence,
 start_failed_panel_detection, and stopping_reason. Panel reacquisitions are counted.
+`page_language` reports the Maps document language (for example `ru-DE`), and
+`supported_languages` lists `en`, `de`, and `ru`.
 `review_route_hint`, `restaurant_name_source`, and `scroll_candidates` explain the
 fallback. Each candidate reports only its tag/role, card count, client/scroll
-heights, and rejection reason—no review content or reviewer attributes. If
+heights, current scroll position, local structural flags, and rejection reason—no
+review content or reviewer attributes. Confirm `extension_version: "0.1.6"` and
+`content_script_version: "0.1.6"`.
+An opener outside the scroller may set `opener_in_shared_main: true`, which is
+informational and does not reject it. Actual blockers are individually named
+`business_details_in_scroller` or `preview_opener_in_scroller`.
+An active Reviews tab scoped to the same pane is positive full-list evidence, so
+retained business controls do not veto that verified tab's list. All reviews /
+Alle Rezensionen / Все отзывы is classified as a filter only with full-interface
+context and appropriate container/control structure. It is still an entry in
+ordinary overview mode. A dedicated scroller on the active place's review route,
+under its confirmed Reviews tab and without overview heading/tabs/business
+details, is not rejected by a residual More reviews button. Ambiguous preview
+containers and document scrolling remain excluded. Candidate diagnostics include
+`opener_kind`, `ignored_all_reviews_filters`, `verified_dedicated_list`, and
+`opener_ignored_in_verified_list` so these decisions appear in downloaded logs.
+After Start, `scroll_attempts` and `last_scroll` report the requested panel movement
+(`before`, `after`, `moved`) and `automatic_scrolling` shows the selected setting.
+If
 `panel_evidence` is `reviews_route_scroller`, the route-and-scroller fallback was used.
 Diagnostics include no reviewer fields, cookies, credentials, or account details;
 concise Start-failure/reacquisition events are also logged with the `[RRI]` prefix
